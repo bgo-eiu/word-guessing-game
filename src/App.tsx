@@ -19,7 +19,13 @@ import {
   WORD_NOT_FOUND_MESSAGE,
   CORRECT_WORD_MESSAGE,
 } from './constants/strings'
-import { isWordInWordList, isWinningWord, solution } from './lib/words'
+import {
+  isWordInWordList,
+  isWinningWord,
+  solution,
+  solutionWithoutModifiers,
+  modifiers,
+} from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
@@ -53,15 +59,13 @@ function App() {
   const [successAlert, setSuccessAlert] = useState('')
   const [guesses, setGuesses] = useState<string[]>(() => {
     const loaded = loadGameStateFromLocalStorage()
+    console.log(solution)
     if (loaded?.solution !== solution) {
       return []
     }
-    const gameWasWon = loaded.guesses.includes(solution)
+    const gameWasWon = loaded.guesses.includes(solutionWithoutModifiers)
     if (gameWasWon) {
       setIsGameWon(true)
-    }
-    if (loaded.guesses.length === 6 && !gameWasWon) {
-      setIsGameLost(true)
     }
     return loaded.guesses
   })
@@ -82,7 +86,7 @@ function App() {
   }
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution })
+    saveGameStateToLocalStorage({ guesses, solution, solutionWithoutModifiers })
   }, [guesses])
 
   useEffect(() => {
@@ -103,7 +107,7 @@ function App() {
   }, [isGameWon, isGameLost])
 
   const onChar = (value: string) => {
-    if (currentGuess.length < 5 && guesses.length < 6 && !isGameWon) {
+    if (currentGuess.length < 3 && !isGameWon) {
       setCurrentGuess(`${currentGuess}${value}`)
     }
   }
@@ -116,14 +120,13 @@ function App() {
     if (isGameWon || isGameLost) {
       return
     }
-    if (!(currentGuess.length === 5)) {
+    if (!(currentGuess.length === 3)) {
       setIsNotEnoughLetters(true)
       return setTimeout(() => {
         setIsNotEnoughLetters(false)
       }, ALERT_TIME_MS)
     }
-
-    if (!isWordInWordList(currentGuess)) {
+    if (!isWordInWordList(currentGuess, modifiers)) {
       setIsWordNotFoundAlertOpen(true)
       return setTimeout(() => {
         setIsWordNotFoundAlertOpen(false)
@@ -132,18 +135,13 @@ function App() {
 
     const winningWord = isWinningWord(currentGuess)
 
-    if (currentGuess.length === 5 && guesses.length < 6 && !isGameWon) {
+    if (currentGuess.length === 3 && !isGameWon) {
       setGuesses([...guesses, currentGuess])
       setCurrentGuess('')
 
       if (winningWord) {
         setStats(addStatsForCompletedGame(stats, guesses.length))
         return setIsGameWon(true)
-      }
-
-      if (guesses.length === 5) {
-        setStats(addStatsForCompletedGame(stats, guesses.length + 1))
-        setIsGameLost(true)
       }
     }
   }
@@ -152,20 +150,33 @@ function App() {
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div className="flex w-80 mx-auto items-center mb-8 mt-12">
         <h1 className="text-xl grow font-bold dark:text-white">{GAME_TITLE}</h1>
-        <SunIcon
-          className="h-6 w-6 cursor-pointer dark:stroke-white"
+        <button
+          aria-label="toggle theme"
           onClick={() => handleDarkMode(!isDarkMode)}
-        />
-        <InformationCircleIcon
-          className="h-6 w-6 cursor-pointer dark:stroke-white"
+        >
+          <SunIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
+        </button>
+
+        <button
+          aria-label="how to play"
           onClick={() => setIsInfoModalOpen(true)}
-        />
-        <ChartBarIcon
-          className="h-6 w-6 cursor-pointer dark:stroke-white"
+        >
+          <InformationCircleIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
+        </button>
+
+        <button
+          aria-label="statistics"
           onClick={() => setIsStatsModalOpen(true)}
-        />
+        >
+          <ChartBarIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
+        </button>
       </div>
-      <Grid guesses={guesses} currentGuess={currentGuess} />
+
+      <Grid
+        guesses={guesses}
+        currentGuess={currentGuess}
+        modifiers={modifiers}
+      />
       <Keyboard
         onChar={onChar}
         onDelete={onDelete}

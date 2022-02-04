@@ -15,17 +15,11 @@ export const addStatsForCompletedGame = (
 
   stats.totalGames += 1
 
-  if (count > 5) {
-    // A fail situation
-    stats.currentStreak = 0
-    stats.gamesFailed += 1
-  } else {
-    stats.winDistribution[count] += 1
-    stats.currentStreak += 1
+  stats.winDistribution[count] += 1
+  stats.currentStreak += 1
 
-    if (stats.bestStreak < stats.currentStreak) {
-      stats.bestStreak = stats.currentStreak
-    }
+  if (stats.bestStreak < stats.currentStreak) {
+    stats.bestStreak = stats.currentStreak
   }
 
   stats.successRate = getSuccessRate(stats)

@@ -1,12 +1,19 @@
 import { Cell } from './Cell'
+import { Modifier } from './modifier'
 
-export const EmptyRow = () => {
-  const emptyCells = Array.from(Array(5))
+type Props = {
+  modifier?: Modifier
+}
 
+const defaultModifiers = [undefined, undefined, undefined]
+
+export const EmptyRow = ({ modifier }: Props) => {
+  const emptyCells = Array.from(Array(3))
+  const mod = modifier ?? defaultModifiers
   return (
     <div className="flex justify-center mb-1">
       {emptyCells.map((_, i) => (
-        <Cell key={i} />
+        <Cell key={i} modifier={mod[i]} />
       ))}
     </div>
   )

@@ -1,34 +1,60 @@
-import { solution } from './words'
+import { solutionWithoutModifiers } from './words'
 
 export type CharStatus = 'absent' | 'present' | 'correct'
 
-export type CharValue =
-  | 'Q'
-  | 'W'
-  | 'E'
-  | 'R'
-  | 'T'
-  | 'Y'
-  | 'U'
-  | 'I'
-  | 'O'
-  | 'P'
-  | 'A'
-  | 'S'
-  | 'D'
-  | 'F'
-  | 'G'
-  | 'H'
-  | 'J'
-  | 'K'
-  | 'L'
-  | 'Z'
-  | 'X'
-  | 'C'
-  | 'V'
-  | 'B'
-  | 'N'
-  | 'M'
+export const Letters = [
+  'ੳ',
+  'ਅ',
+  'ੲ',
+  'ਸ',
+  'ਹ',
+  'ਕ',
+  'ਖ',
+  'ਗ',
+  'ਘ',
+  'ਙ',
+  'ਚ',
+  'ਛ',
+  'ਜ',
+  'ਝ',
+  'ਞ',
+  'ਟ',
+  'ਠ',
+  'ਡ',
+  'ਢ',
+  'ਣ',
+  'ਤ',
+  'ਥ',
+  'ਦ',
+  'ਧ',
+  'ਨ',
+  'ਪ',
+  'ਫ',
+  'ਬ',
+  'ਭ',
+  'ਮ',
+  'ਯ',
+  'ਰ',
+  'ਲ',
+  'ਵ',
+  'ੜ',
+  'ਸ਼',
+  'ਖ਼',
+  'ਗ਼',
+  'ਜ਼',
+  'ਫ਼',
+  'ਆ',
+  'ਇ',
+  'ਈ',
+  'ਉ',
+  'ਊ',
+  'ਏ',
+  'ਐ',
+  'ਓ',
+  'ਔ',
+]
+
+export type CharValue = typeof Letters[number]
 
 export const getStatuses = (
   guesses: string[]
@@ -37,12 +63,12 @@ export const getStatuses = (
 
   guesses.forEach((word) => {
     word.split('').forEach((letter, i) => {
-      if (!solution.includes(letter)) {
+      if (!solutionWithoutModifiers.includes(letter)) {
         // make status absent
         return (charObj[letter] = 'absent')
       }
 
-      if (letter === solution[i]) {
+      if (letter === solutionWithoutModifiers[i]) {
         //make status correct
         return (charObj[letter] = 'correct')
       }
@@ -58,13 +84,12 @@ export const getStatuses = (
 }
 
 export const getGuessStatuses = (guess: string): CharStatus[] => {
-  const splitSolution = solution.split('')
+  const splitSolution = solutionWithoutModifiers.split('')
   const splitGuess = guess.split('')
 
   const solutionCharsTaken = splitSolution.map((_) => false)
 
   const statuses: CharStatus[] = Array.from(Array(guess.length))
-
   // handle all correct cases first
   splitGuess.forEach((letter, i) => {
     if (letter === splitSolution[i]) {

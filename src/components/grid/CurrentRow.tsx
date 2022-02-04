@@ -2,20 +2,15 @@ import { Cell } from './Cell'
 
 type Props = {
   guess: string
+  modifiers: string[]
 }
 
-export const CurrentRow = ({ guess }: Props) => {
-  const splitGuess = guess.split('')
-  const emptyCells = Array.from(Array(5 - splitGuess.length))
-
+export const CurrentRow = ({ guess, modifiers }: Props) => {
   return (
     <div className="flex justify-center mb-1">
-      {splitGuess.map((letter, i) => (
-        <Cell key={i} value={letter} />
-      ))}
-      {emptyCells.map((_, i) => (
-        <Cell key={i} />
-      ))}
+      <Cell key={0} value={guess.charAt(0)} modifier={modifiers[0]} />
+      <Cell key={1} value={guess.charAt(1)} modifier={modifiers[1]} />
+      <Cell key={2} value={guess.charAt(2)} modifier={modifiers[2]} />
     </div>
   )
 }
