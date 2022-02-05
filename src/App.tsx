@@ -34,6 +34,7 @@ import {
 
 import './App.css'
 
+console.log({ solution: solution })
 const ALERT_TIME_MS = 2000
 
 function App() {
@@ -59,7 +60,6 @@ function App() {
   const [successAlert, setSuccessAlert] = useState('')
   const [guesses, setGuesses] = useState<string[]>(() => {
     const loaded = loadGameStateFromLocalStorage()
-    console.log(solution)
     if (loaded?.solution !== solution) {
       return []
     }
@@ -67,6 +67,7 @@ function App() {
     if (gameWasWon) {
       setIsGameWon(true)
     }
+
     return loaded.guesses
   })
 

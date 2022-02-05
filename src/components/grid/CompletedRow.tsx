@@ -9,16 +9,15 @@ type Props = {
 
 export const CompletedRow = ({ guess, modifiers }: Props) => {
   const statuses = getGuessStatuses(guess)
-  return (
-    <td className="flex justify-center mb-1">
-      {guess.split('').map((letter, i) => (
-        <Cell
-          key={i}
-          value={letter}
-          status={statuses[i]}
-          modifier={modifiers[i]}
-        />
-      ))}
-    </td>
-  )
+  const cells = guess.split('').map((letter, i) => (
+    <div>
+      <Cell
+        key={i}
+        value={letter}
+        status={statuses[i]}
+        modifier={modifiers[i]}
+      />{' '}
+    </div>
+  ))
+  return <div>{cells}</div>
 }

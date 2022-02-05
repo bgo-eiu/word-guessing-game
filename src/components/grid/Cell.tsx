@@ -1,5 +1,6 @@
 import { CharStatus } from '../../lib/statuses'
 import classnames from 'classnames'
+import { traceDeprecation } from 'process'
 
 type Props = {
   modifier?: string
@@ -23,9 +24,9 @@ export const Cell = ({ modifier, value, status }: Props) => {
     }
   )
   return (
-    <div className={classes} aria-label={`${value} ${status}`}>
+    <td className={classes} aria-label={`${value} ${status}`}>
       {value}
       {modifier}
-    </div>
+    </td>
   )
 }

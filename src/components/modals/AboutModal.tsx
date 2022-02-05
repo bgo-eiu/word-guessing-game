@@ -13,14 +13,27 @@ export const AboutModal = ({ isOpen, handleClose }: Props) => {
       handleClose={handleClose}
     >
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        This is an open-source Punjabi guessing game.{' '}
+        read about it at{' '}
         <a
-          href="https://github.com/karanbirsingh/word-guessing-game"
-          className="underline font-bold"
+          href="https://karanbirsingh.com/punjabi-puzzle"
+          className="underline"
         >
-          Learn more here
+          karanbirsingh.com/punjabi-puzzle
         </a>
-        {''}.
+        {''}
+        <br />
+        <br />
+        based on{' '}
+        <a
+          href="https://github.com/hannahcode/word-guessing-game"
+          className="underline"
+        >
+          word-guessing-game
+        </a>{' '}
+        and{' '}
+        <a href="https://kach.github.io/shabdle/" className="underline">
+          shabdle
+        </a>
       </p>
     </BaseModal>
   )
