@@ -151,6 +151,7 @@ function App() {
       <div className="flex w-80 mx-auto items-center mb-8 mt-12">
         <h1 className="text-xl grow font-bold dark:text-white">{GAME_TITLE}</h1>
         <button
+          className="p-2"
           aria-label="toggle theme"
           onClick={() => handleDarkMode(!isDarkMode)}
         >
@@ -158,17 +159,11 @@ function App() {
         </button>
 
         <button
+          className="p-2"
           aria-label="how to play"
           onClick={() => setIsInfoModalOpen(true)}
         >
           <InformationCircleIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
-        </button>
-
-        <button
-          aria-label="statistics"
-          onClick={() => setIsStatsModalOpen(true)}
-        >
-          <ChartBarIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
       </div>
 

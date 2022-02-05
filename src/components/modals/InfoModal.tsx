@@ -10,7 +10,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
   return (
     <BaseModal title="How to play" isOpen={isOpen} handleClose={handleClose}>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        Guess the word. The color will change to show how close your guess is.
+        Guess the word. The colors will give you clues.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
@@ -19,16 +19,17 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="" modifier="ਿ" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The last letter has a ਿ. You only need to guess the mukta.
+        The last letter has a ਿ. You just guess the mukta.
       </p>
-
       <div className="flex justify-center mb-1 mt-4">
-        <Cell value="ਗ" />
+        <Cell value="ਗ" status="absent" />
         <Cell value="ਰ" status="correct" />
-        <Cell value="ਮ" />
+        <Cell value="ਮ" status="absent" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        ਰ is in the word and in the correct spot.
+        <span className="text-lg">ਰ</span> is in the word and in the correct
+        spot. <br /> Muktas <span className="text-lg">ਗ</span> or{' '}
+        <span className="text-lg">ਮ</span> are not in the word at all.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
@@ -37,16 +38,16 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="ਕ" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The mukta ਪ (ignore the ਾ) is in the word but in the wrong spot.
+        The mukta <span className="text-lg">ਪ</span> (not with{' '}
+        <span className="text-lg">ਾ</span>) is in the word.
+        <br /> But it's in the wrong spot.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
-        <Cell value="ਲ" modifier="ੇ" />
-        <Cell value="ਖ" status="absent" />
-        <Cell value="ਕ" />
+        <Cell value="ਆ" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        ਖ is not in the word in any spot.
+        Special letters like ਆ or ਏ will not show ਾ or ੇ clues.
       </p>
     </BaseModal>
   )

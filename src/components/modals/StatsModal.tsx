@@ -48,7 +48,6 @@ export const StatsModal = ({
       isOpen={isOpen}
       handleClose={handleClose}
     >
-      <StatBar gameStats={gameStats} />
       {(isGameLost || isGameWon) && (
         <div className="mt-5 sm:mt-6 columns-2 dark:text-white">
           <div>
