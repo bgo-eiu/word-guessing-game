@@ -1,4 +1,4 @@
-export const GAME_TITLE = 'ਪੰਜਾਬੀ puzzle'
+export const GAME_TITLE = 'ਪੰਜਾਬੀ word puzzle'
 
 export const WIN_MESSAGES = ['Great Job!', 'Awesome', 'Well done!']
 export const GAME_COPIED_MESSAGE = 'Game copied to clipboard'

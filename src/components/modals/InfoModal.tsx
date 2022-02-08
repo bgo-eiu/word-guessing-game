@@ -16,10 +16,10 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       <div className="flex justify-center mb-1 mt-4">
         <Cell value="" />
         <Cell value="" />
-        <Cell value="" modifier="ਿ" />
+        <Cell value="" modifier="ੀ" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The last letter has a ਿ. You just guess the mukta.
+        The last letter has a ੀ.
       </p>
       <div className="flex justify-center mb-1 mt-4">
         <Cell value="ਗ" status="absent" />
@@ -28,7 +28,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
         <span className="text-lg">ਰ</span> is in the word and in the correct
-        spot. <br /> Muktas <span className="text-lg">ਗ</span> or{' '}
+        spot. <br /> Letters <span className="text-lg">ਗ</span> or{' '}
         <span className="text-lg">ਮ</span> are not in the word at all.
       </p>
 
@@ -38,7 +38,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="ਕ" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The mukta <span className="text-lg">ਪ</span> (not with{' '}
+        The letter <span className="text-lg">ਪ</span> (not with{' '}
         <span className="text-lg">ਾ</span>) is in the word.
         <br /> But it's in the wrong spot.
       </p>
@@ -47,8 +47,17 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="ਆ" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        Special letters like ਆ or ਏ will not show ਾ or ੇ clues.
+        Independent vowels like <span className="text-lg">ਆ</span> or{' '}
+        <span className="text-lg">ਏ</span> will not show{' '}
+        <span className="text-lg">ਾ</span> or <span className="text-lg">ੇ</span>{' '}
+        clues.
       </p>
+      <a
+        className="underline text-sm text-gray-500 dark:text-gray-300"
+        href="https://karanbirsingh.com/punjabi-puzzle"
+      >
+        Read more here.
+      </a>
     </BaseModal>
   )
 }

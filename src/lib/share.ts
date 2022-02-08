@@ -4,8 +4,10 @@ import { GAME_TITLE } from '../constants/strings'
 
 export const shareStatus = (guesses: string[], lost: boolean) => {
   navigator.clipboard.writeText(
-    `${GAME_TITLE} puzzle #${solutionIndex} | ${guesses.length} guesses\n\n` +
-      generateEmojiGrid(guesses)
+    `${GAME_TITLE} #${solutionIndex} | ${guesses.length} guesses\n\n` +
+      generateEmojiGrid(guesses) +
+      '\n\n' +
+      'Play at https://punjabipuzzle.netlify.app/'
   )
 }
 

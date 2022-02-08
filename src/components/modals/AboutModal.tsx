@@ -12,7 +12,7 @@ export const AboutModal = ({ isOpen, handleClose }: Props) => {
       isOpen={isOpen}
       handleClose={handleClose}
     >
-      <p className="text-sm text-gray-500 dark:text-gray-300">
+      <p className="text-xl text-gray-500 dark:text-gray-300">
         read about it at{' '}
         <a
           href="https://karanbirsingh.com/punjabi-puzzle"
@@ -24,13 +24,17 @@ export const AboutModal = ({ isOpen, handleClose }: Props) => {
         <br />
         <br />
         based on{' '}
+        <a href="https://www.powerlanguage.co.uk/wordle/" className="underline">
+          wordle
+        </a>
+        ,{' '}
         <a
           href="https://github.com/hannahcode/word-guessing-game"
           className="underline"
         >
           word-guessing-game
-        </a>{' '}
-        and{' '}
+        </a>
+        ,{' '}
         <a href="https://kach.github.io/shabdle/" className="underline">
           shabdle
         </a>
