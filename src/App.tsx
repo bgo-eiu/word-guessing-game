@@ -209,6 +209,7 @@ function BaseGame(props: GameProps) {
           className="p-2"
           aria-label="toggle theme"
           onClick={() => handleDarkMode(!isDarkMode)}
+          data-goatcounter-click="click.theme-change"
         >
           <SunIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
@@ -217,6 +218,7 @@ function BaseGame(props: GameProps) {
           className="p-2"
           aria-label="how to play"
           onClick={() => setIsInfoModalOpen(true)}
+          data-goatcounter-click="click.info-modal"
         >
           <InformationCircleIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
@@ -263,6 +265,7 @@ function BaseGame(props: GameProps) {
         type="button"
         className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xl font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
         onClick={() => setIsAboutModalOpen(true)}
+        data-goatcounter-click="click.about-modal"
       >
         {ABOUT_GAME_MESSAGE}
       </button>

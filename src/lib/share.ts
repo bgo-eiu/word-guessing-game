@@ -2,17 +2,16 @@ import { getGuessStatuses } from './statuses'
 import { GAME_TITLE } from '../constants/strings'
 import { SolutionInfo } from './words'
 
-export const shareStatus = (
+export const getShareStr = (
   guesses: string[],
-  lost: boolean,
   gameDescription: string,
   solutionInfo: SolutionInfo
 ) => {
-  navigator.clipboard.writeText(
+  return (
     `${GAME_TITLE} | ${gameDescription} | ${guesses.length} guesses\n\n` +
-      generateEmojiGrid(guesses, solutionInfo) +
-      '\n\n' +
-      'Play at https://punjabipuzzle.netlify.app/'
+    generateEmojiGrid(guesses, solutionInfo) +
+    '\n\n' +
+    'Play at https://punjabipuzzle.netlify.app/'
   )
 }
 

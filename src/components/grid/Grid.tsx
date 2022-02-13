@@ -19,21 +19,23 @@ export const Grid = ({
   return (
     <div className="flex justify-center pb-6">
       <table>
-        {guesses.map((guess, i) => (
-          <tr>
+        <tbody>
+          {guesses.map((guess, i) => (
             <CompletedRow
               key={i}
               guess={guess}
               modifiers={modifiers}
               solutionInfo={solutionInfo}
             />
-          </tr>
-        ))}
-        {
-          <tr>
-            <CurrentRow guess={currentGuess} modifiers={modifiers} />
-          </tr>
-        }
+          ))}
+          {
+            <CurrentRow
+              key={'current'}
+              guess={currentGuess}
+              modifiers={modifiers}
+            />
+          }
+        </tbody>
       </table>
     </div>
   )
