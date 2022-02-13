@@ -50,7 +50,16 @@ export const StatsModal = ({
 
   const dictionaryLink = `https://dsal.uchicago.edu/cgi-bin/app/singh_query.py?qs=${solutionInfo.solution}&searchhws=yes`
   const shareText = getShareStr(guesses, gameDescription, solutionInfo)
-  const shareTextEncoded = encodeURIComponent(shareText)
+  const shareTextEmojiReplaced = shareText
+    .replaceAll('🟩', 'GOOD')
+    .replaceAll('🟦', 'CLOSE')
+    .replaceAll('⬜', 'WRONG')
+
+  const shareTextPreEncoded = encodeURIComponent(shareTextEmojiReplaced)
+  const shareTextEncoded = shareTextPreEncoded
+    .replaceAll('GOOD', '%F0%9F%9F%A9')
+    .replaceAll('CLOSE', '%F0%9F%9F%A6')
+    .replaceAll('WRONG', '%E2%AC%9C')
 
   return (
     <BaseModal
@@ -64,7 +73,7 @@ export const StatsModal = ({
             You've guessed {gameStats.totalGames} words. Keep it up!
             <button
               aria-label="play another word"
-              className="mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-700 text-base font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 sm:text-sm"
+              className="mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-700 text-lg font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 sm:text-sm"
               onClick={() => {
                 handlePlayAnother()
               }}
@@ -72,37 +81,65 @@ export const StatsModal = ({
             >
               Play another word
             </button>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                aria-label="share results"
-                className="mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-                onClick={() => {
-                  navigator.clipboard.writeText(shareText)
-                  handleShare()
-                }}
-                data-goatcounter-click="click.share-clipboard"
-              >
-                {SHARE_TEXT}
-              </button>
-              <a
-                aria-label="see other tweets"
-                className="block mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:text-sm"
-                href={`https://twitter.com/search?q=punjabipuzzle.netlify.app&f=live`}
-                data-goatcounter-click="click.view-twitter"
-                target="_blank"
-              >
-                See other results
-              </a>
-            </div>
             <a
               aria-label="see word definition"
-              className="block mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+              className="block mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-lg font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
               href={dictionaryLink}
               target="_blank"
               data-goatcounter-click="click.dsal-dictionary"
             >
               See {solutionInfo.solution} meaning
             </a>
+            <div className="grid grid-cols-2 gap-2 items-center">
+              <a
+                aria-label="share on WhatsApp"
+                className="block mt-4 w-full rounded-md border border-transparent shadow-sm py-2 bg-blue-600 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:text-sm"
+                href={`https://wa.me/?text=${shareTextEncoded}`}
+                data-goatcounter-click="click.share-whatsapp"
+                target="_blank"
+              >
+                <img
+                  className="inline"
+                  alt=""
+                  width="32px"
+                  src="/whatsapp2.png"
+                ></img>
+                <p className="inline ml-2">WhatsApp</p>
+              </a>
+              <a
+                aria-label="share on Twitter"
+                className="block mt-4 w-full rounded-md border border-transparent shadow-sm py-2 bg-blue-600 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:text-sm"
+                href={`https://twitter.com/intent/tweet?text=${shareTextEncoded}`}
+                data-goatcounter-click="click.share-twitter"
+                target="_blank"
+              >
+                <img
+                  className="inline"
+                  alt=""
+                  width="32px"
+                  src="/twitter.png"
+                ></img>
+                <p className="inline ml-2">Tweet</p>
+              </a>
+            </div>
+            <button
+              aria-label="share results"
+              className="mt-4 w-full rounded-md border border-transparent shadow-sm py-2 bg-blue-600 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+              onClick={() => {
+                navigator.clipboard.writeText(shareText)
+                handleShare()
+              }}
+              data-goatcounter-click="click.copy-clipboard"
+            >
+              {/* from https://remixicon.com/ */}
+              <img
+                className="inline"
+                alt=""
+                width="32px"
+                src="/clipboard-fill.png"
+              ></img>
+              <p className="inline ml-2">{SHARE_TEXT}</p>
+            </button>
           </div>
         </div>
       )}
