@@ -18,6 +18,7 @@ export const AboutModal = ({ isOpen, handleClose }: Props) => {
           href="https://karanbirsingh.com/punjabi-puzzle"
           className="underline"
           data-goatcounter-click="click.blog-post"
+          data-goatcounter-title="blog-post"
         >
           karanbirsingh.com/punjabi-puzzle
         </a>

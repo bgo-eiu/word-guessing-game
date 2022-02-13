@@ -34,7 +34,7 @@ import {
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
 
-const ALERT_TIME_MS = 2000
+const ALERT_TIME_MS = 500
 
 type GameProps = {
   solutionInfo: SolutionInfo
@@ -142,7 +142,7 @@ function BaseGame(props: GameProps) {
         solutionWithoutModifiers,
       })
     }
-  }, [guesses, solution, solutionWithoutModifiers])
+  }, [guesses, solution, solutionWithoutModifiers, props.gameType])
 
   useEffect(() => {
     if (isGameWon) {
@@ -195,21 +195,53 @@ function BaseGame(props: GameProps) {
       setCurrentGuess('')
 
       if (winningWord) {
+        try {
+          ;(window as any).goatcounter.count({
+            path: function (p: string) {
+              return 'winning-word-' + p
+            },
+            title: 'winning-word',
+            event: true,
+          })
+        } catch (e) {}
+
         setStats(addStatsForCompletedGame(stats, guesses.length))
         return setIsGameWon(true)
       }
     }
   }
 
+  const randomLink = (
+    <a
+      href="/random"
+      className="w-fit mx-auto my-4 flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
+      data-goatcounter-click="click.switch-to-random"
+      data-goatcounter-title="switch-to-random"
+    >
+      Guess random words instead
+    </a>
+  )
+  const dailyLink = (
+    <a
+      href="/"
+      className="w-fit mx-auto my-4 flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
+      data-goatcounter-click="click.switch-to-daily"
+      data-goatcounter-title="switch-to-daily"
+    >
+      Guess word of the day
+    </a>
+  )
+
   return (
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <div className="flex w-80 mx-auto items-center mb-8 mt-12">
+      <div className="flex w-72 mx-auto items-center mb-8">
         <h1 className="text-xl grow font-bold dark:text-white">{GAME_TITLE}</h1>
         <button
           className="p-2"
           aria-label="toggle theme"
           onClick={() => handleDarkMode(!isDarkMode)}
           data-goatcounter-click="click.theme-change"
+          data-goatcounter-title="theme-change"
         >
           <SunIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
@@ -219,6 +251,7 @@ function BaseGame(props: GameProps) {
           aria-label="how to play"
           onClick={() => setIsInfoModalOpen(true)}
           data-goatcounter-click="click.info-modal"
+          data-goatcounter-title="info-modal"
         >
           <InformationCircleIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
@@ -266,10 +299,12 @@ function BaseGame(props: GameProps) {
         className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xl font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
         onClick={() => setIsAboutModalOpen(true)}
         data-goatcounter-click="click.about-modal"
+        data-goatcounter-title="about-modal"
       >
         {ABOUT_GAME_MESSAGE}
       </button>
-
+      {props.gameType === 'daily' && randomLink}
+      {props.gameType === 'random' && dailyLink}
       <Alert message={NOT_ENOUGH_LETTERS_MESSAGE} isOpen={isNotEnoughLetters} />
       <Alert
         message={WORD_NOT_FOUND_MESSAGE}

@@ -70,7 +70,8 @@ export const StatsModal = ({
       {(isGameLost || isGameWon) && (
         <div>
           <div className="mt-5 sm:mt-6 columns-1 dark:text-white">
-            You've guessed {gameStats.totalGames} words. Keep it up!
+            You've guessed {gameStats.totalGames}{' '}
+            {gameStats.totalGames > 1 ? 'words' : 'word'}. Keep it up!
             <button
               aria-label="play another word"
               className="mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-700 text-lg font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 sm:text-sm"
@@ -78,15 +79,18 @@ export const StatsModal = ({
                 handlePlayAnother()
               }}
               data-goatcounter-click="click.play-again"
+              data-goatcounter-title="play-again"
             >
               Play another word
             </button>
             <a
               aria-label="see word definition"
-              className="block mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-lg font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+              className="block mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-500 text-lg font-medium text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 sm:text-sm"
               href={dictionaryLink}
               target="_blank"
+              rel="noreferrer"
               data-goatcounter-click="click.dsal-dictionary"
+              data-goatcounter-title="dsal-dictionary"
             >
               See {solutionInfo.solution} meaning
             </a>
@@ -96,7 +100,9 @@ export const StatsModal = ({
                 className="block mt-4 w-full rounded-md border border-transparent shadow-sm py-2 bg-blue-600 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:text-sm"
                 href={`https://wa.me/?text=${shareTextEncoded}`}
                 data-goatcounter-click="click.share-whatsapp"
+                data-goatcounter-title="share-whatsapp"
                 target="_blank"
+                rel="noreferrer"
               >
                 <img
                   className="inline"
@@ -111,7 +117,9 @@ export const StatsModal = ({
                 className="block mt-4 w-full rounded-md border border-transparent shadow-sm py-2 bg-blue-600 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:text-sm"
                 href={`https://twitter.com/intent/tweet?text=${shareTextEncoded}`}
                 data-goatcounter-click="click.share-twitter"
+                data-goatcounter-title="share-twitter"
                 target="_blank"
+                rel="noreferrer"
               >
                 <img
                   className="inline"
@@ -130,6 +138,7 @@ export const StatsModal = ({
                 handleShare()
               }}
               data-goatcounter-click="click.copy-clipboard"
+              data-goatcounter-title="copy-clipboard"
             >
               {/* from https://remixicon.com/ */}
               <img
