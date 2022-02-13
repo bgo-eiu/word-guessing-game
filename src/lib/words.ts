@@ -1,4 +1,4 @@
-import { WORDS } from '../constants/wordlist'
+import { WORDS, EXCLUDE_FROM_RANDOM } from '../constants/wordlist'
 import { VALIDGUESSES } from '../constants/validGuesses'
 import {
   createModifier,
@@ -34,8 +34,11 @@ export type DailySolutionInfo = SolutionInfo & {
 }
 
 export const getRandomWord = (): SolutionInfo => {
-  const index = Math.floor(Math.random() * WORDS.length)
-  const solution = WORDS[index % WORDS.length].toUpperCase()
+  const newWords = WORDS.slice().filter(
+    (w) => EXCLUDE_FROM_RANDOM.includes(w) === false
+  )
+  const index = Math.floor(Math.random() * newWords.length)
+  const solution = newWords[index % newWords.length].toUpperCase()
   const solutionWithoutModifiers = solution
     .split('')
     .filter((l) => !isModifier(l))
