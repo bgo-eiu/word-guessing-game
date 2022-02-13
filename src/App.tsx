@@ -20,11 +20,10 @@ import {
   CORRECT_WORD_MESSAGE,
 } from './constants/strings'
 import {
+  getRandomWord,
+  getWordOfDay,
   isWordInWordList,
-  isWinningWord,
-  solution,
-  solutionWithoutModifiers,
-  modifiers,
+  SolutionInfo,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -33,11 +32,56 @@ import {
 } from './lib/localStorage'
 
 import './App.css'
+import { Route, Routes } from 'react-router-dom'
 
-console.log({ solution: solution })
 const ALERT_TIME_MS = 2000
 
+type GameProps = {
+  solutionInfo: SolutionInfo
+  gameDescription: string
+  gameType: 'daily' | 'random'
+}
+
 function App() {
+  return (
+    <div>
+      <Routes>
+        <Route path="/" element={<DailyApp />} />
+        <Route path="random" element={<Random />} />
+      </Routes>
+    </div>
+  )
+}
+
+function DailyApp() {
+  const solutionInfo = getWordOfDay()
+  const gameDescription = `daily: #${solutionInfo.solutionIndex}`
+  return (
+    <BaseGame
+      solutionInfo={solutionInfo}
+      gameDescription={gameDescription}
+      gameType={'daily'}
+    ></BaseGame>
+  )
+}
+
+function Random() {
+  const solutionInfo = getRandomWord()
+  const gameDescription = `random: ${solutionInfo.solution}`
+  return (
+    <BaseGame
+      solutionInfo={solutionInfo}
+      gameDescription={gameDescription}
+      gameType={'random'}
+    ></BaseGame>
+  )
+}
+
+function BaseGame(props: GameProps) {
+  const { solution, solutionWithoutModifiers, modifiers } = props.solutionInfo
+  const gameDescription = props.gameDescription
+  console.log({ solution: props.solutionInfo.solution })
+
   const prefersDarkMode = window.matchMedia(
     '(prefers-color-scheme: dark)'
   ).matches
@@ -59,16 +103,20 @@ function App() {
   )
   const [successAlert, setSuccessAlert] = useState('')
   const [guesses, setGuesses] = useState<string[]>(() => {
-    const loaded = loadGameStateFromLocalStorage()
-    if (loaded?.solution !== solution) {
+    if (props.gameType === 'daily') {
+      const loaded = loadGameStateFromLocalStorage()
+      if (loaded?.solution !== solution) {
+        return []
+      }
+      const gameWasWon = loaded.guesses.includes(solutionWithoutModifiers)
+      if (gameWasWon) {
+        setIsGameWon(true)
+      }
+
+      return loaded.guesses
+    } else {
       return []
     }
-    const gameWasWon = loaded.guesses.includes(solutionWithoutModifiers)
-    if (gameWasWon) {
-      setIsGameWon(true)
-    }
-
-    return loaded.guesses
   })
 
   const [stats, setStats] = useState(() => loadStats())
@@ -87,8 +135,14 @@ function App() {
   }
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution, solutionWithoutModifiers })
-  }, [guesses])
+    if (props.gameType === 'daily') {
+      saveGameStateToLocalStorage({
+        guesses,
+        solution,
+        solutionWithoutModifiers,
+      })
+    }
+  }, [guesses, solution, solutionWithoutModifiers])
 
   useEffect(() => {
     if (isGameWon) {
@@ -134,7 +188,7 @@ function App() {
       }, ALERT_TIME_MS)
     }
 
-    const winningWord = isWinningWord(currentGuess)
+    const winningWord = currentGuess === solutionWithoutModifiers
 
     if (currentGuess.length === 3 && !isGameWon) {
       setGuesses([...guesses, currentGuess])
@@ -172,12 +226,14 @@ function App() {
         guesses={guesses}
         currentGuess={currentGuess}
         modifiers={modifiers}
+        solutionInfo={props.solutionInfo}
       />
       <Keyboard
         onChar={onChar}
         onDelete={onDelete}
         onEnter={onEnter}
         guesses={guesses}
+        solutionInfo={props.solutionInfo}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
@@ -186,6 +242,7 @@ function App() {
       <StatsModal
         isOpen={isStatsModalOpen}
         handleClose={() => setIsStatsModalOpen(false)}
+        handlePlayAnother={() => window.location.assign('/random')}
         guesses={guesses}
         gameStats={stats}
         isGameLost={isGameLost}
@@ -194,6 +251,8 @@ function App() {
           setSuccessAlert(GAME_COPIED_MESSAGE)
           return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
         }}
+        solutionInfo={props.solutionInfo}
+        gameDescription={gameDescription}
       />
       <AboutModal
         isOpen={isAboutModalOpen}

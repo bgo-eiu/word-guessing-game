@@ -3,16 +3,24 @@ import { getStatuses, Letters } from '../../lib/statuses'
 import { Key } from './Key'
 import { useEffect } from 'react'
 import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
+import { SolutionInfo } from '../../lib/words'
 
 type Props = {
   onChar: (value: string) => void
   onDelete: () => void
   onEnter: () => void
   guesses: string[]
+  solutionInfo: SolutionInfo
 }
 
-export const Keyboard = ({ onChar, onDelete, onEnter, guesses }: Props) => {
-  const charStatuses = getStatuses(guesses)
+export const Keyboard = ({
+  onChar,
+  onDelete,
+  onEnter,
+  guesses,
+  solutionInfo,
+}: Props) => {
+  const charStatuses = getStatuses(guesses, solutionInfo)
 
   const onClick = (value: KeyValue) => {
     if (value === 'ENTER') {
