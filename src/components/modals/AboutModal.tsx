@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BaseModal } from './BaseModal'
 
 type Props = {
@@ -17,8 +18,17 @@ export const AboutModal = ({ isOpen, handleClose }: Props) => {
         <a
           href="https://karanbirsingh.com/punjabi-puzzle"
           className="underline"
-          data-goatcounter-click="click.blog-post"
-          data-goatcounter-title="blog-post"
+          onClick={() => {
+            try {
+              ;(window as any).goatcounter.count({
+                path: function (p: string) {
+                  return 'click.blog-post' + p
+                },
+                title: 'click.blog-post',
+                event: true,
+              })
+            } catch (e) {}
+          }}
         >
           karanbirsingh.com/punjabi-puzzle
         </a>

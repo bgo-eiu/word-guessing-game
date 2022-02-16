@@ -11,6 +11,7 @@ import {
   SHARE_TEXT,
 } from '../../constants/strings'
 import { DailySolutionInfo, SolutionInfo } from '../../lib/words'
+import { useEffect } from 'react'
 
 type Props = {
   isOpen: boolean
@@ -77,9 +78,16 @@ export const StatsModal = ({
               className="mt-4 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-700 text-lg font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 sm:text-sm"
               onClick={() => {
                 handlePlayAnother()
+                try {
+                  ;(window as any).goatcounter.count({
+                    path: function (p: string) {
+                      return 'click.play-again' + p
+                    },
+                    title: 'click.play-again',
+                    event: true,
+                  })
+                } catch (e) {}
               }}
-              data-goatcounter-click="click.play-again"
-              data-goatcounter-title="play-again"
             >
               Play another word
             </button>
@@ -89,8 +97,17 @@ export const StatsModal = ({
               href={dictionaryLink}
               target="_blank"
               rel="noreferrer"
-              data-goatcounter-click="click.dsal-dictionary"
-              data-goatcounter-title="dsal-dictionary"
+              onClick={() => {
+                try {
+                  ;(window as any).goatcounter.count({
+                    path: function (p: string) {
+                      return 'click.dsal-dictionary' + p
+                    },
+                    title: 'click.dsal-dictionary',
+                    event: true,
+                  })
+                } catch (e) {}
+              }}
             >
               See {solutionInfo.solution} meaning
             </a>
@@ -99,10 +116,19 @@ export const StatsModal = ({
                 aria-label="share on WhatsApp"
                 className="block mt-4 w-full rounded-md border border-transparent shadow-sm py-2 bg-blue-600 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:text-sm"
                 href={`https://wa.me/?text=${shareTextEncoded}`}
-                data-goatcounter-click="click.share-whatsapp"
-                data-goatcounter-title="share-whatsapp"
                 target="_blank"
                 rel="noreferrer"
+                onClick={() => {
+                  try {
+                    ;(window as any).goatcounter.count({
+                      path: function (p: string) {
+                        return 'click.share-whatsapp' + p
+                      },
+                      title: 'click.share-whatsapp',
+                      event: true,
+                    })
+                  } catch (e) {}
+                }}
               >
                 <img
                   className="inline"
@@ -116,8 +142,17 @@ export const StatsModal = ({
                 aria-label="share on Twitter"
                 className="block mt-4 w-full rounded-md border border-transparent shadow-sm py-2 bg-blue-600 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:text-sm"
                 href={`https://twitter.com/intent/tweet?text=${shareTextEncoded}`}
-                data-goatcounter-click="click.share-twitter"
-                data-goatcounter-title="share-twitter"
+                onClick={() => {
+                  try {
+                    ;(window as any).goatcounter.count({
+                      path: function (p: string) {
+                        return 'click.share-twitter' + p
+                      },
+                      title: 'click.share-twitter',
+                      event: true,
+                    })
+                  } catch (e) {}
+                }}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -136,9 +171,16 @@ export const StatsModal = ({
               onClick={() => {
                 navigator.clipboard.writeText(shareText)
                 handleShare()
+                try {
+                  ;(window as any).goatcounter.count({
+                    path: function (p: string) {
+                      return 'click.share-clipboard' + p
+                    },
+                    title: 'click.share-clipboard',
+                    event: true,
+                  })
+                } catch (e) {}
               }}
-              data-goatcounter-click="click.copy-clipboard"
-              data-goatcounter-title="copy-clipboard"
             >
               {/* from https://remixicon.com/ */}
               <img
