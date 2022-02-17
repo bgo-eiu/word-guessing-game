@@ -20,11 +20,10 @@ import {
   CORRECT_WORD_MESSAGE,
 } from './constants/strings'
 import {
+  getRandomWord,
+  getWordOfDay,
   isWordInWordList,
-  isWinningWord,
-  solution,
-  solutionWithoutModifiers,
-  modifiers,
+  SolutionInfo,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -33,11 +32,56 @@ import {
 } from './lib/localStorage'
 
 import './App.css'
+import { Route, Routes } from 'react-router-dom'
 
-console.log({ solution: solution })
-const ALERT_TIME_MS = 2000
+const ALERT_TIME_MS = 500
+
+type GameProps = {
+  solutionInfo: SolutionInfo
+  gameDescription: string
+  gameType: 'daily' | 'random'
+}
 
 function App() {
+  return (
+    <div>
+      <Routes>
+        <Route path="/" element={<DailyApp />} />
+        <Route path="random" element={<Random />} />
+      </Routes>
+    </div>
+  )
+}
+
+function DailyApp() {
+  const solutionInfo = getWordOfDay()
+  const gameDescription = `daily: #${solutionInfo.solutionIndex}`
+  return (
+    <BaseGame
+      solutionInfo={solutionInfo}
+      gameDescription={gameDescription}
+      gameType={'daily'}
+    ></BaseGame>
+  )
+}
+
+function Random() {
+  const solutionInfo = getRandomWord()
+  const gameDescription = `random: ${solutionInfo.solution}`
+  return (
+    <BaseGame
+      solutionInfo={solutionInfo}
+      gameDescription={gameDescription}
+      gameType={'random'}
+    ></BaseGame>
+  )
+}
+
+function BaseGame(props: GameProps) {
+  const { solution, solutionWithoutModifiers, modifiers } = props.solutionInfo
+  const gameDescription = props.gameDescription
+  console.log({ solution: props.solutionInfo.solution })
+
   const prefersDarkMode = window.matchMedia(
     '(prefers-color-scheme: dark)'
   ).matches
@@ -59,16 +103,20 @@ function App() {
   )
   const [successAlert, setSuccessAlert] = useState('')
   const [guesses, setGuesses] = useState<string[]>(() => {
-    const loaded = loadGameStateFromLocalStorage()
-    if (loaded?.solution !== solution) {
+    if (props.gameType === 'daily') {
+      const loaded = loadGameStateFromLocalStorage()
+      if (loaded?.solution !== solution) {
+        return []
+      }
+      const gameWasWon = loaded.guesses.includes(solutionWithoutModifiers)
+      if (gameWasWon) {
+        setIsGameWon(true)
+      }
+
+      return loaded.guesses
+    } else {
       return []
     }
-    const gameWasWon = loaded.guesses.includes(solutionWithoutModifiers)
-    if (gameWasWon) {
-      setIsGameWon(true)
-    }
-
-    return loaded.guesses
   })
 
   const [stats, setStats] = useState(() => loadStats())
@@ -87,8 +135,14 @@ function App() {
   }
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution, solutionWithoutModifiers })
-  }, [guesses])
+    if (props.gameType === 'daily') {
+      saveGameStateToLocalStorage({
+        guesses,
+        solution,
+        solutionWithoutModifiers,
+      })
+    }
+  }, [guesses, solution, solutionWithoutModifiers, props.gameType])
 
   useEffect(() => {
     if (isGameWon) {
@@ -134,27 +188,60 @@ function App() {
       }, ALERT_TIME_MS)
     }
 
-    const winningWord = isWinningWord(currentGuess)
+    const winningWord = currentGuess === solutionWithoutModifiers
 
     if (currentGuess.length === 3 && !isGameWon) {
       setGuesses([...guesses, currentGuess])
       setCurrentGuess('')
 
       if (winningWord) {
+        try {
+          ;(window as any).goatcounter.count({
+            path: function (p: string) {
+              return 'winning-word-' + p
+            },
+            title: 'winning-word',
+            event: true,
+          })
+        } catch (e) {}
+
         setStats(addStatsForCompletedGame(stats, guesses.length))
         return setIsGameWon(true)
       }
     }
   }
 
+  const randomLink = (
+    <a
+      href="/random"
+      className="w-fit mx-auto my-4 flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
+      data-goatcounter-click="click.switch-to-random"
+      data-goatcounter-title="switch-to-random"
+    >
+      Guess random words instead
+    </a>
+  )
+  const dailyLink = (
+    <a
+      href="/"
+      className="w-fit mx-auto my-4 flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
+      data-goatcounter-click="click.switch-to-daily"
+      data-goatcounter-title="switch-to-daily"
+    >
+      Guess word of the day
+    </a>
+  )
+
   return (
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <div className="flex w-80 mx-auto items-center mb-8 mt-12">
+      <div className="flex w-72 mx-auto items-center mb-8">
         <h1 className="text-xl grow font-bold dark:text-white">{GAME_TITLE}</h1>
         <button
           className="p-2"
           aria-label="toggle theme"
           onClick={() => handleDarkMode(!isDarkMode)}
+          data-goatcounter-click="click.theme-change"
+          data-goatcounter-title="theme-change"
         >
           <SunIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
@@ -163,6 +250,8 @@ function App() {
           className="p-2"
           aria-label="how to play"
           onClick={() => setIsInfoModalOpen(true)}
+          data-goatcounter-click="click.info-modal"
+          data-goatcounter-title="info-modal"
         >
           <InformationCircleIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
@@ -172,12 +261,14 @@ function App() {
         guesses={guesses}
         currentGuess={currentGuess}
         modifiers={modifiers}
+        solutionInfo={props.solutionInfo}
       />
       <Keyboard
         onChar={onChar}
         onDelete={onDelete}
         onEnter={onEnter}
         guesses={guesses}
+        solutionInfo={props.solutionInfo}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
@@ -186,6 +277,7 @@ function App() {
       <StatsModal
         isOpen={isStatsModalOpen}
         handleClose={() => setIsStatsModalOpen(false)}
+        handlePlayAnother={() => window.location.assign('/random')}
         guesses={guesses}
         gameStats={stats}
         isGameLost={isGameLost}
@@ -194,20 +286,30 @@ function App() {
           setSuccessAlert(GAME_COPIED_MESSAGE)
           return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
         }}
+        solutionInfo={props.solutionInfo}
+        gameDescription={gameDescription}
       />
       <AboutModal
         isOpen={isAboutModalOpen}
         handleClose={() => setIsAboutModalOpen(false)}
       />
-
+      <div className="mx-auto flex items-center text-sm dark:text-white p-4 pb-0">
+        <p>
+          Note: the word for 2/17 used a older spelling that is less common
+          nowadays. It has been updated to a more modern spelling.
+        </p>
+      </div>
       <button
         type="button"
         className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xl font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
         onClick={() => setIsAboutModalOpen(true)}
+        data-goatcounter-click="click.about-modal"
+        data-goatcounter-title="about-modal"
       >
         {ABOUT_GAME_MESSAGE}
       </button>
-
+      {props.gameType === 'daily' && randomLink}
+      {props.gameType === 'random' && dailyLink}
       <Alert message={NOT_ENOUGH_LETTERS_MESSAGE} isOpen={isNotEnoughLetters} />
       <Alert
         message={WORD_NOT_FOUND_MESSAGE}

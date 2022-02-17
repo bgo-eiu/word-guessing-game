@@ -1,4 +1,4 @@
-import { solutionWithoutModifiers } from './words'
+import { SolutionInfo } from './words'
 
 export type CharStatus = 'absent' | 'present' | 'correct'
 
@@ -57,18 +57,19 @@ export const Letters = [
 export type CharValue = typeof Letters[number]
 
 export const getStatuses = (
-  guesses: string[]
+  guesses: string[],
+  solutionInfo: SolutionInfo
 ): { [key: string]: CharStatus } => {
   const charObj: { [key: string]: CharStatus } = {}
 
   guesses.forEach((word) => {
     word.split('').forEach((letter, i) => {
-      if (!solutionWithoutModifiers.includes(letter)) {
+      if (!solutionInfo.solutionWithoutModifiers.includes(letter)) {
         // make status absent
         return (charObj[letter] = 'absent')
       }
 
-      if (letter === solutionWithoutModifiers[i]) {
+      if (letter === solutionInfo.solutionWithoutModifiers[i]) {
         //make status correct
         return (charObj[letter] = 'correct')
       }
@@ -83,8 +84,11 @@ export const getStatuses = (
   return charObj
 }
 
-export const getGuessStatuses = (guess: string): CharStatus[] => {
-  const splitSolution = solutionWithoutModifiers.split('')
+export const getGuessStatuses = (
+  guess: string,
+  solutionInfo: SolutionInfo
+): CharStatus[] => {
+  const splitSolution = solutionInfo.solutionWithoutModifiers.split('')
   const splitGuess = guess.split('')
 
   const solutionCharsTaken = splitSolution.map((_) => false)

@@ -1,4 +1,4 @@
-import { WORDS } from '../constants/wordlist'
+import { WORDS, EXCLUDE_FROM_RANDOM } from '../constants/wordlist'
 import { VALIDGUESSES } from '../constants/validGuesses'
 import {
   createModifier,
@@ -22,11 +22,36 @@ export const isWordInWordList = (word: string, modifiers: Modifier) => {
   */
 }
 
-export const isWinningWord = (word: string) => {
-  return solutionWithoutModifiers === word
+export type SolutionInfo = {
+  solution: string
+  solutionWithoutModifiers: string
+  solutionIndex: number
+  modifiers: Modifier
 }
 
-export const getWordOfDay = () => {
+export type DailySolutionInfo = SolutionInfo & {
+  tomorrow: number
+}
+
+export const getRandomWord = (): SolutionInfo => {
+  const newWords = WORDS.slice().filter(
+    (w) => EXCLUDE_FROM_RANDOM.includes(w) === false
+  )
+  const index = Math.floor(Math.random() * newWords.length)
+  const solution = newWords[index % newWords.length].toUpperCase()
+  const solutionWithoutModifiers = solution
+    .split('')
+    .filter((l) => !isModifier(l))
+    .join('')
+  return {
+    solution,
+    solutionWithoutModifiers,
+    solutionIndex: index,
+    modifiers: createModifier(solution),
+  }
+}
+
+export const getWordOfDay = (): DailySolutionInfo => {
   const epochMs = new Date('February 4, 2022 00:00:00').valueOf()
   const now = Date.now()
   const msInDay = 86400000 // / 24 / 12 // every 5 min
@@ -46,11 +71,3 @@ export const getWordOfDay = () => {
     modifiers: createModifier(solution),
   }
 }
-
-export const {
-  solution,
-  solutionIndex,
-  tomorrow,
-  modifiers,
-  solutionWithoutModifiers,
-} = getWordOfDay()
