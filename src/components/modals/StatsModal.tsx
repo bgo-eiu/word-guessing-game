@@ -49,7 +49,8 @@ export const StatsModal = ({
     </div>
   ) : null
 
-  const dictionaryLink = `https://dsal.uchicago.edu/cgi-bin/app/singh_query.py?qs=${solutionInfo.solution}&searchhws=yes`
+  // const dictionaryLink = `https://dsal.uchicago.edu/cgi-bin/app/singh_query.py?qs=${solutionInfo.solution}&searchhws=yes`
+  const dictionaryLink = `https://www.shabdkosh.com/search-dictionary?lc=pa&sl=en&tl=pa&e=${solutionInfo.solution}`
   const shareText = getShareStr(guesses, gameDescription, solutionInfo)
   const shareTextEmojiReplaced = shareText
     .replaceAll('🟩', 'GOOD')
