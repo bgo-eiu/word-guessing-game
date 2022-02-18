@@ -218,7 +218,7 @@ function BaseGame(props: GameProps) {
       data-goatcounter-click="click.switch-to-random"
       data-goatcounter-title="switch-to-random"
     >
-      Guess random words instead
+      Practice random words
     </a>
   )
   const dailyLink = (
@@ -293,12 +293,6 @@ function BaseGame(props: GameProps) {
         isOpen={isAboutModalOpen}
         handleClose={() => setIsAboutModalOpen(false)}
       />
-      <div className="mx-auto flex items-center text-sm dark:text-white p-4 pb-0">
-        <p>
-          Note: the word for 2/17 used a older spelling that is less common
-          nowadays. It has been updated to a more modern spelling.
-        </p>
-      </div>
       <button
         type="button"
         className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xl font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
@@ -310,6 +304,16 @@ function BaseGame(props: GameProps) {
       </button>
       {props.gameType === 'daily' && randomLink}
       {props.gameType === 'random' && dailyLink}
+      <a
+        href="https://docs.google.com/forms/d/e/1FAIpQLSdZdiicCOOfGoSFmkAITtNOwTkbFVzIjJLqvyYEqWK9rgf5vg/viewform"
+        className="w-fit mx-auto my-4 flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
+        data-goatcounter-click="click.contact-me"
+        data-goatcounter-title="click.contact-me"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Send me feedback
+      </a>
       <Alert message={NOT_ENOUGH_LETTERS_MESSAGE} isOpen={isNotEnoughLetters} />
       <Alert
         message={WORD_NOT_FOUND_MESSAGE}
