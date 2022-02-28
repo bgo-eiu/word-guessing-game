@@ -232,8 +232,21 @@ function BaseGame(props: GameProps) {
     </a>
   )
 
+  const d = new Date(Date.now())
+  const noAlertDate = new Date(2022, 2, 2)
+  const dateAlerts =
+    d < noAlertDate ? (
+      <div className="flex w-72 mx-auto items-center">
+        <p className="mb-2 text-sm grow dark:text-white">
+          update: changed blue to dark yellow (letter in wrong place). thank you
+          for playing!
+        </p>
+      </div>
+    ) : null
+
   return (
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
+      {dateAlerts}
       <div className="flex w-72 mx-auto items-center mb-8">
         <h1 className="text-xl grow font-bold dark:text-white">{GAME_TITLE}</h1>
         <button
@@ -256,7 +269,6 @@ function BaseGame(props: GameProps) {
           <InformationCircleIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
       </div>
-
       <Grid
         guesses={guesses}
         currentGuess={currentGuess}

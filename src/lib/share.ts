@@ -29,7 +29,7 @@ export const generateEmojiGrid = (
             case 'correct':
               return '🟩'
             case 'present':
-              return '🟦'
+              return '🟨'
             default:
               return '⬜'
           }
