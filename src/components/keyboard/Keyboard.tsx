@@ -4,6 +4,7 @@ import { Key } from './Key'
 import { useEffect } from 'react'
 import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
 import { SolutionInfo } from '../../lib/words'
+import { Settings } from '../../lib/localStorage'
 
 type Props = {
   onChar: (value: string) => void
@@ -11,6 +12,7 @@ type Props = {
   onEnter: () => void
   guesses: string[]
   solutionInfo: SolutionInfo
+  view: Settings['keyboardLayout']
 }
 
 export const Keyboard = ({
@@ -19,6 +21,7 @@ export const Keyboard = ({
   onEnter,
   guesses,
   solutionInfo,
+  view,
 }: Props) => {
   const charStatuses = getStatuses(guesses, solutionInfo)
 
@@ -51,33 +54,32 @@ export const Keyboard = ({
     }
   }, [onEnter, onDelete, onChar])
 
+  let total = 0
+  const splitLetters = []
+  const nextCount = view === 'ten-per-line' ? 10 : 5
+  while (total < Letters.length) {
+    splitLetters.push(Letters.slice(total, total + nextCount))
+    total += nextCount
+  }
+
+  const width = view === 'ten-per-line' ? 40 : 60
+  const keys = splitLetters.map((letters, i) => (
+    <div className="flex justify-center mb-1" key={i}>
+      {letters.map((l) => (
+        <Key
+          key={l}
+          value={l}
+          onClick={onClick}
+          width={width}
+          status={charStatuses[l]}
+        />
+      ))}
+    </div>
+  ))
+
   return (
-    <div>
-      <div className="flex justify-center mb-1">
-        {Letters.slice(0, 10).map((l) => (
-          <Key key={l} value={l} onClick={onClick} status={charStatuses[l]} />
-        ))}
-      </div>
-      <div className="flex justify-center mb-1">
-        {Letters.slice(10, 20).map((l) => (
-          <Key key={l} value={l} onClick={onClick} status={charStatuses[l]} />
-        ))}
-      </div>
-      <div className="flex justify-center mb-1">
-        {Letters.slice(20, 30).map((l) => (
-          <Key key={l} value={l} onClick={onClick} status={charStatuses[l]} />
-        ))}
-      </div>
-      <div className="flex justify-center mb-1">
-        {Letters.slice(30, 40).map((l) => (
-          <Key key={l} value={l} onClick={onClick} status={charStatuses[l]} />
-        ))}
-      </div>
-      <div className="flex justify-center mb-1">
-        {Letters.slice(40, 50).map((l) => (
-          <Key key={l} value={l} onClick={onClick} status={charStatuses[l]} />
-        ))}
-      </div>
+    <div className="pt-6">
+      {keys}
       <div className="flex justify-center">
         <Key key={'enter'} width={100} value="ENTER" onClick={onClick}>
           {ENTER_TEXT}

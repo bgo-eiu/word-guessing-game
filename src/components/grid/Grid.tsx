@@ -17,26 +17,21 @@ export const Grid = ({
   solutionInfo,
 }: Props) => {
   return (
-    <div className="flex justify-center pb-6">
-      <table>
-        <tbody>
-          {guesses.map((guess, i) => (
-            <CompletedRow
-              key={i}
-              guess={guess}
-              modifiers={modifiers}
-              solutionInfo={solutionInfo}
-            />
-          ))}
-          {
-            <CurrentRow
-              key={'current'}
-              guess={currentGuess}
-              modifiers={modifiers}
-            />
-          }
-        </tbody>
-      </table>
+    <div>
+      <div className="flex justify-center">
+        <table>
+          <tbody>
+            {guesses.map((guess, i) => (
+              <CompletedRow
+                key={i}
+                guess={guess}
+                modifiers={modifiers}
+                solutionInfo={solutionInfo}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

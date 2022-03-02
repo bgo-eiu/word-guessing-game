@@ -1,9 +1,24 @@
 const gameStateKey = 'gameState'
+const settingsKey = 'settings'
 
-type StoredGameState = {
+export type StoredGameState = {
   guesses: string[]
   solution: string
   solutionWithoutModifiers: string
+}
+
+export type Settings = {
+  theme: 'dark' | 'light'
+  keyboardLayout: 'ten-per-line' | 'traditional'
+}
+
+export const saveSettingsToLocalStorage = (settings: Settings) => {
+  localStorage.setItem(settingsKey, JSON.stringify(settings))
+}
+
+export const loadSettingsFromLocalStorage = () => {
+  const state = localStorage.getItem(settingsKey)
+  return state ? (JSON.parse(state) as Settings) : null
 }
 
 export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {

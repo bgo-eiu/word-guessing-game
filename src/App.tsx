@@ -1,8 +1,4 @@
-import {
-  InformationCircleIcon,
-  ChartBarIcon,
-  SunIcon,
-} from '@heroicons/react/outline'
+import { InformationCircleIcon, CogIcon } from '@heroicons/react/outline'
 import { useState, useEffect } from 'react'
 import { Alert } from './components/alerts/Alert'
 import { Grid } from './components/grid/Grid'
@@ -28,11 +24,16 @@ import {
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
+  loadSettingsFromLocalStorage,
   saveGameStateToLocalStorage,
+  saveSettingsToLocalStorage,
+  Settings,
 } from './lib/localStorage'
 
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
+import { CurrentRow } from './components/grid/CurrentRow'
+import { SettingsModal } from './components/modals/SettingsModal'
 
 const ALERT_TIME_MS = 500
 
@@ -88,19 +89,32 @@ function BaseGame(props: GameProps) {
 
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
-  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
-  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
-  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
   const [isGameLost, setIsGameLost] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem('theme')
-      ? localStorage.getItem('theme') === 'dark'
-      : prefersDarkMode
-      ? true
-      : false
-  )
+  const [settings, setSettings] = useState<Settings>(() => {
+    // migration to new settings key
+    let settings = loadSettingsFromLocalStorage()
+    if (settings === null) {
+      const oldThemeSetting = localStorage.getItem('theme')
+      let resolvedThemeSetting: Settings['theme'] = 'light'
+      if (oldThemeSetting === 'dark' || oldThemeSetting === 'light') {
+        resolvedThemeSetting = oldThemeSetting
+      } else {
+        resolvedThemeSetting = prefersDarkMode ? 'dark' : 'light'
+      }
+      settings = {
+        theme: resolvedThemeSetting,
+        keyboardLayout: 'ten-per-line',
+      }
+      saveSettingsToLocalStorage(settings)
+    }
+    return settings
+  })
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
   const [successAlert, setSuccessAlert] = useState('')
   const [guesses, setGuesses] = useState<string[]>(() => {
     if (props.gameType === 'daily') {
@@ -122,16 +136,20 @@ function BaseGame(props: GameProps) {
   const [stats, setStats] = useState(() => loadStats())
 
   useEffect(() => {
-    if (isDarkMode) {
+    if (settings.theme === 'dark') {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
     }
-  }, [isDarkMode])
+  }, [settings])
 
-  const handleDarkMode = (isDark: boolean) => {
-    setIsDarkMode(isDark)
-    localStorage.setItem('theme', isDark ? 'dark' : 'light')
+  const handleSettings = (partialSettings: Partial<Settings>) => {
+    const newSettings: Settings = {
+      ...settings,
+      ...partialSettings,
+    }
+    saveSettingsToLocalStorage(newSettings)
+    setSettings(newSettings)
   }
 
   useEffect(() => {
@@ -233,13 +251,13 @@ function BaseGame(props: GameProps) {
   )
 
   const d = new Date(Date.now())
-  const noAlertDate = new Date(2022, 2, 2)
+  const noAlertDate = new Date(2022, 2, 3)
   const dateAlerts =
     d < noAlertDate ? (
       <div className="flex w-72 mx-auto items-center">
         <p className="mb-2 text-sm grow dark:text-white">
-          update: changed blue to dark yellow (letter in wrong place). thank you
-          for playing!
+          update: there's a new keyboard option in settings. thanks for the
+          suggestion!
         </p>
       </div>
     ) : null
@@ -249,14 +267,15 @@ function BaseGame(props: GameProps) {
       {dateAlerts}
       <div className="flex w-72 mx-auto items-center mb-8">
         <h1 className="text-xl grow font-bold dark:text-white">{GAME_TITLE}</h1>
+
         <button
           className="p-2"
-          aria-label="toggle theme"
-          onClick={() => handleDarkMode(!isDarkMode)}
-          data-goatcounter-click="click.theme-change"
-          data-goatcounter-title="theme-change"
+          aria-label="toggle settings"
+          onClick={() => setIsSettingsModalOpen(true)}
+          data-goatcounter-click="click.settings-open"
+          data-goatcounter-title="settings-open"
         >
-          <SunIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
+          <CogIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
         </button>
 
         <button
@@ -275,16 +294,33 @@ function BaseGame(props: GameProps) {
         modifiers={modifiers}
         solutionInfo={props.solutionInfo}
       />
+      {isGameWon ? null : (
+        <div className="flex justify-center sticky self-start top-2 overflow-y-auto">
+          <CurrentRow
+            key={'current'}
+            guess={currentGuess}
+            modifiers={modifiers}
+          />
+        </div>
+      )}
+
       <Keyboard
         onChar={onChar}
         onDelete={onDelete}
         onEnter={onEnter}
         guesses={guesses}
         solutionInfo={props.solutionInfo}
+        view={settings.keyboardLayout}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
         handleClose={() => setIsInfoModalOpen(false)}
+      />
+      <SettingsModal
+        settings={settings}
+        isOpen={isSettingsModalOpen}
+        handleClose={() => setIsSettingsModalOpen(false)}
+        handleSettingChange={handleSettings}
       />
       <StatsModal
         isOpen={isStatsModalOpen}
