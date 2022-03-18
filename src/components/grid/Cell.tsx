@@ -23,7 +23,7 @@ export const Cell = ({ modifier, value, status }: Props) => {
       'cell-animation': !!value,
     }
   )
-  const text = `${value}${modifier}`
+  const text = `${value ?? ''}${modifier ?? ''}`
   return (
     <td className={classes} aria-label={`${value} ${status}`}>
       {text}

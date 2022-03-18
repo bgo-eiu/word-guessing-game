@@ -251,13 +251,13 @@ function BaseGame(props: GameProps) {
   )
 
   const d = new Date(Date.now())
-  const noAlertDate = new Date(2022, 2, 4)
+  const noAlertDate = new Date(2022, 3, 19)
   const dateAlerts =
     d < noAlertDate ? (
       <div className="flex w-72 mx-auto items-center">
         <p className="mb-2 text-sm grow dark:text-white">
-          update: new keyboard option, and iPhone properly combines vowels now.
-          thanks!
+          please resubmit recent feedback; i don't have access to email
+          addresses :)
         </p>
       </div>
     ) : null
