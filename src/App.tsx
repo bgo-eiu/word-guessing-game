@@ -251,13 +251,13 @@ function BaseGame(props: GameProps) {
   )
 
   const d = new Date(Date.now())
-  const noAlertDate = new Date(2022, 3, 19)
+  const noAlertDate = new Date(2022, 2, 28)
   const dateAlerts =
     d < noAlertDate ? (
       <div className="flex w-72 mx-auto items-center">
         <p className="mb-2 text-sm grow dark:text-white">
-          please resubmit recent feedback; i don't have access to email
-          addresses :)
+          thank you for playing 50 days :) you all guessed the word right over
+          5000 times!
         </p>
       </div>
     ) : null
