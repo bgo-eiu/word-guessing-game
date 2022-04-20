@@ -20,7 +20,7 @@ const modifierChars = [
 export const isModifier = (l: string) => modifierChars.includes(l)
 
 export function createModifier(source: string): Modifier {
-  const modifiers: string[] = ['', '', '', '']
+  const modifiers: string[] = ['']
   let index = 0
   const letters = source.split('')
   for (const letter of letters) {
@@ -28,6 +28,7 @@ export function createModifier(source: string): Modifier {
       modifiers[index] += letter
     } else {
       index++
+      if (index >= modifiers.length) modifiers.push('')
     }
   }
   const result = modifiers.splice(1)

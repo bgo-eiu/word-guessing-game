@@ -81,7 +81,6 @@ function Random() {
 function BaseGame(props: GameProps) {
   const { solution, solutionWithoutModifiers, modifiers } = props.solutionInfo
   const gameDescription = props.gameDescription
-  console.log({ solution: props.solutionInfo.solution })
 
   const prefersDarkMode = window.matchMedia(
     '(prefers-color-scheme: dark)'
@@ -117,8 +116,10 @@ function BaseGame(props: GameProps) {
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
   const [successAlert, setSuccessAlert] = useState('')
   const [guesses, setGuesses] = useState<string[]>(() => {
+    console.log(props)
     if (props.gameType === 'daily') {
       const loaded = loadGameStateFromLocalStorage()
+      console.log(loaded)
       if (loaded?.solution !== solution) {
         return []
       }
@@ -180,7 +181,7 @@ function BaseGame(props: GameProps) {
   }, [isGameWon, isGameLost])
 
   const onChar = (value: string) => {
-    if (currentGuess.length < 3 && !isGameWon) {
+    if (currentGuess.length < solutionWithoutModifiers.length && !isGameWon) {
       setCurrentGuess(`${currentGuess}${value}`)
     }
   }
@@ -193,7 +194,7 @@ function BaseGame(props: GameProps) {
     if (isGameWon || isGameLost) {
       return
     }
-    if (!(currentGuess.length === 3)) {
+    if (!(currentGuess.length === solutionWithoutModifiers.length)) {
       setIsNotEnoughLetters(true)
       return setTimeout(() => {
         setIsNotEnoughLetters(false)
@@ -208,7 +209,7 @@ function BaseGame(props: GameProps) {
 
     const winningWord = currentGuess === solutionWithoutModifiers
 
-    if (currentGuess.length === 3 && !isGameWon) {
+    if (currentGuess.length === solutionWithoutModifiers.length && !isGameWon) {
       setGuesses([...guesses, currentGuess])
       setCurrentGuess('')
 
@@ -251,13 +252,12 @@ function BaseGame(props: GameProps) {
   )
 
   const d = new Date(Date.now())
-  const noAlertDate = new Date(2022, 2, 28)
+  const noAlertDate = new Date(2022, 3, 21)
   const dateAlerts =
     d < noAlertDate ? (
       <div className="flex w-72 mx-auto items-center">
         <p className="mb-2 text-sm grow dark:text-white">
-          thank you for playing 50 days :) you all guessed the word right over
-          5000 times!
+          NEW: we now have 4-letter words too!
         </p>
       </div>
     ) : null
